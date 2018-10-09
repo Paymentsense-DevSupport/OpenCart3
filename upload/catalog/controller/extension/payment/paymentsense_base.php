@@ -88,13 +88,19 @@ abstract class ControllerExtensionPaymentPaymentsenseBase extends Controller
 				$this->session->data['configured_template_engine'] = $this->config->get('template_engine');
 			}
 
+			$route = preg_replace('/tpl$/', '', $route);
+
 			$theme = ($this->config->get('config_theme') == 'default')
 				? 'theme_default_directory'
 				: 'config_theme';
 
-			$this->config->set('template_directory', $this->config->get($theme) . '/template/');
+			$theme_name = $this->config->get($theme);
 
-			$route = preg_replace('/tpl$/', '', $route);
+			if (!is_file(DIR_TEMPLATE . $theme_name . '/template/' . $route . '.tpl')) {
+				$theme_name = 'default';
+			}
+
+			$this->config->set('template_directory', $theme_name . '/template/');
 			$this->config->set('template_engine', 'template');
 		}
 	}
