@@ -25,8 +25,8 @@ abstract class ControllerPaymentPaymentsenseBase extends Controller
 	/**
 	 * Module Version and Data
 	 */
-	const MODULE_VERSION = '3.0.1';
-	const MODULE_DATE    = '9 October 2018';
+	const MODULE_VERSION = '3.0.2';
+	const MODULE_DATE    = '15 August 2019';
 
 	/**
 	 * OpenCart Order Status Constants
@@ -46,11 +46,6 @@ abstract class ControllerPaymentPaymentsenseBase extends Controller
 	const OC_ORD_STATUS_EXPIRED           = 14;
 	const OC_ORD_STATUS_PROCESSED         = 15;
 	const OC_ORD_STATUS_VOIDED            = 16;
-
-	/**
-	 * Patterns for validating the input of the configuration fields
-	 */
-	const PATTERN_MID = '/^([a-zA-Z0-9]{6})([-])([0-9]{7})$/';
 
 	/**
 	 * Module Name

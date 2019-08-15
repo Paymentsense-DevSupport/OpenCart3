@@ -108,8 +108,6 @@ class ControllerExtensionPaymentPaymentsenseHosted extends ControllerPaymentPaym
 
 		if (!$this->request->post['paymentsense_hosted_mid']) {
 			$this->error['mid'] = $this->language->get('error_mid');
-		} elseif (!preg_match(self::PATTERN_MID, $this->request->post['paymentsense_hosted_mid'])) {
-			$this->error['mid'] = $this->language->get('error_midmatch');
 		}
 
 		if (!$this->request->post['paymentsense_hosted_pass']) {

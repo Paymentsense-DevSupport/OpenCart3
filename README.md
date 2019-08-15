@@ -1,12 +1,12 @@
 Paymentsense Extension for OpenCart
 ====================================
 
-Version: 3.0.1
-Date: 2018-10-09
+Version: 3.0.2
+Date: 2019-08-15
 Tags: online payment, payment, payment gateway
 Requires at least: 2.3.0.0
 Tested up to: 3.0.2.0
-Stable tag: 3.0.1
+Stable tag: 3.0.2
 Requires PHP: 5.4
 License: GPLv3
 License URL: http://www.gnu.org/licenses/gpl-3.0.html
@@ -42,6 +42,11 @@ Manual installation
 
 Changelog
 ---------
+
+##### 3.0.2
+### Removed
+- Check for the Merchant ID format 
+
 
 ##### 3.0.1
 ### Fixed

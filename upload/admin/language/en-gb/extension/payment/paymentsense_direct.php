@@ -20,12 +20,11 @@ $_['entry_pass']		          = 'Gateway Merchant Password:';
 $_['entry_type']   		          = 'Transaction Type:';
 
 // Error
-$_['error_failed']   			  = 'An error has occurred while saving the module settings!';
-$_['error_permission']            = 'You do not have permission to modify this payment module!';
-$_['error_required']              = 'Please fill in all the required fields!';
-$_['error_mid']                   = 'Paymentsense Gateway Merchant ID Required!';
-$_['error_pass']                  = 'Paymentsense Gateway Merchant Password Required!';
-$_['error_midmatch']              = 'Your Gateway Merchant ID should contain the first 6 characters of the company name followed by a hyphen (-) and 7 numbers';
+$_['error_failed']   			  = 'An error has occurred while saving the module settings.';
+$_['error_permission']            = 'You do not have permission to modify this payment module.';
+$_['error_required']              = 'Please fill in all the required fields.';
+$_['error_mid']                   = 'Paymentsense Gateway Merchant ID is required and should be in the correct format, e.g. ABCDEF-1234567.';
+$_['error_pass']                  = 'Paymentsense Gateway Merchant Password Required.';
 
 // Warnings
 $_['warning_insecure_connection'] = 'Paymentsense Direct requires secure connection (HTTPS) in order to appear on checkout.';
