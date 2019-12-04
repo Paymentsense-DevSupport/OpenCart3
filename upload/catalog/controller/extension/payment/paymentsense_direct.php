@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright (C) 2018 Paymentsense Ltd.
+ * Copyright (C) 2019 Paymentsense Ltd.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -13,7 +13,7 @@
  * GNU General Public License for more details.
  *
  * @author      Paymentsense
- * @copyright   2018 Paymentsense Ltd.
+ * @copyright   2019 Paymentsense Ltd.
  * @license     https://www.gnu.org/licenses/gpl-3.0.html
  */
 
@@ -24,12 +24,12 @@ require_once DIR_APPLICATION . "controller/extension/payment/paymentsense_base.p
  */
 class ControllerExtensionPaymentPaymentsenseDirect extends ControllerExtensionPaymentPaymentsenseBase
 {
-    /**
-     * Module Name
-     *
-     * @var string
-     */
-    protected $moduleName = 'paymentsense_direct';
+	/**
+	 * Module Name
+	 *
+	 * @var string
+	 */
+	protected $moduleName = 'paymentsense_direct';
 
 	/**
 	 * Index Action
@@ -436,12 +436,10 @@ class ControllerExtensionPaymentPaymentsenseDirect extends ControllerExtensionPa
 	 * @param int $gatewayId Gateway ID.
 	 * @return string|false
 	 */
-	protected function getPaymentGatewayUrl($gatewayId)
-	{
+	protected function getPaymentGatewayUrl($gatewayId) {
 		$payment_gateways = array(
 			1 => 'https://gw1.paymentsensegateway.com:4430/',
-			2 => 'https://gw2.paymentsensegateway.com:4430/',
-			3 => 'https://gw3.paymentsensegateway.com:4430/'
+			2 => 'https://gw2.paymentsensegateway.com:4430/'
 		);
 		$result = false;
 		if (array_key_exists($gatewayId, $payment_gateways)) {

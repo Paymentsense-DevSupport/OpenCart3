@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright (C) 2018 Paymentsense Ltd.
+ * Copyright (C) 2019 Paymentsense Ltd.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -13,7 +13,7 @@
  * GNU General Public License for more details.
  *
  * @author      Paymentsense
- * @copyright   2018 Paymentsense Ltd.
+ * @copyright   2019 Paymentsense Ltd.
  * @license     https://www.gnu.org/licenses/gpl-3.0.html
  */
 
@@ -23,10 +23,9 @@
 abstract class ControllerPaymentPaymentsenseBase extends Controller
 {
 	/**
-	 * Module Version and Data
+	 * Module Version
 	 */
-	const MODULE_VERSION = '3.0.2';
-	const MODULE_DATE    = '15 August 2019';
+	const MODULE_VERSION = '3.0.3';
 
 	/**
 	 * OpenCart Order Status Constants
@@ -182,7 +181,6 @@ abstract class ControllerPaymentPaymentsenseBase extends Controller
 		$this->load->model('localisation/geo_zone');
 		$result = array(
 			'module_version' => self::MODULE_VERSION,
-			'module_date'    => self::MODULE_DATE,
 			'order_statuses' => $this->model_localisation_order_status->getOrderStatuses(),
 			'geo_zones'      => $this->model_localisation_geo_zone->getGeoZones(),
 			'breadcrumbs'    => $this->getBreadcrumbs(),
@@ -237,8 +235,7 @@ abstract class ControllerPaymentPaymentsenseBase extends Controller
 	 *
 	 * @return string
 	 */
-	protected function getTokenName()
-	{
+	protected function getTokenName() {
 		return $this->isOpenCartVersion3OrAbove() ? 'user_token' : 'token';
 	}
 
@@ -247,8 +244,7 @@ abstract class ControllerPaymentPaymentsenseBase extends Controller
 	 *
 	 * @return string
 	 */
-	protected function getToken()
-	{
+	protected function getToken() {
 		return $this->session->data[$this->getTokenName()];
 	}
 
@@ -257,8 +253,7 @@ abstract class ControllerPaymentPaymentsenseBase extends Controller
 	 *
 	 * @return string
 	 */
-	protected function buildTokenArgumentString()
-	{
+	protected function buildTokenArgumentString() {
 		return $this->getTokenName() . '=' . $this->getToken();
 	}
 
@@ -267,8 +262,7 @@ abstract class ControllerPaymentPaymentsenseBase extends Controller
 	 *
 	 * @return string
 	 */
-	protected function getPaymentExtensionRoute()
-	{
+	protected function getPaymentExtensionRoute() {
 		return $this->isOpenCartVersion3OrAbove() ? 'marketplace/extension' : 'extension/extension';
 	}
 
@@ -277,8 +271,7 @@ abstract class ControllerPaymentPaymentsenseBase extends Controller
 	 *
 	 * @return string
 	 */
-	protected function getDashboardLink()
-	{
+	protected function getDashboardLink() {
 		return $this->url->link('common/dashboard', $this->buildTokenArgumentString(), 'SSL');
 	}
 
@@ -287,8 +280,7 @@ abstract class ControllerPaymentPaymentsenseBase extends Controller
 	 *
 	 * @return string
 	 */
-	protected function getPaymentExtensionsLink()
-	{
+	protected function getPaymentExtensionsLink() {
 		return $this->url->link($this->getPaymentExtensionRoute(), 'type=payment&' . $this->buildTokenArgumentString(), 'SSL');
 	}
 
@@ -297,8 +289,7 @@ abstract class ControllerPaymentPaymentsenseBase extends Controller
 	 *
 	 * @return string
 	 */
-	protected function getPaymentExtensionLink()
-	{
+	protected function getPaymentExtensionLink() {
 		return $this->url->link("extension/payment/{$this->moduleName}", $this->buildTokenArgumentString(), 'SSL');
 	}
 
@@ -307,8 +298,7 @@ abstract class ControllerPaymentPaymentsenseBase extends Controller
 	 *
 	 * @return array
 	 */
-	protected function getBreadcrumbs()
-	{
+	protected function getBreadcrumbs() {
 		return array(
 			array(
 				'text' => $this->language->get('text_home'),
@@ -333,8 +323,7 @@ abstract class ControllerPaymentPaymentsenseBase extends Controller
 	 *
 	 * @return string|null
 	 */
-	protected function getConfigValue($key, $default = null)
-	{
+	protected function getConfigValue($key, $default = null) {
 		if ($this->isOpenCartVersion3OrAbove()) {
 			// As of OpenCart version 3 the key is 'payment_' prefixed
 			$key = "payment_{$key}";
@@ -350,8 +339,7 @@ abstract class ControllerPaymentPaymentsenseBase extends Controller
 	/**
 	 * Updates module configuration settings
 	 */
-	protected function updateSettings()
-	{
+	protected function updateSettings() {
 		$this->load->model('setting/setting');
 
 		$code = $this->moduleName;
@@ -379,12 +367,11 @@ abstract class ControllerPaymentPaymentsenseBase extends Controller
 	 *
 	 * @return bool
 	 */
-	protected function isConnectionSecure()
-	{
-		$https = array_key_exists('HTTPS',$this->request->server)
+	protected function isConnectionSecure() {
+		$https = array_key_exists('HTTPS', $this->request->server)
 			? $this->request->server['HTTPS']
 			: '';
-		$forwarded_proto = array_key_exists('HTTP_X_FORWARDED_PROTO',$this->request->server)
+		$forwarded_proto = array_key_exists('HTTP_X_FORWARDED_PROTO', $this->request->server)
 			? $this->request->server['HTTP_X_FORWARDED_PROTO']
 			: '';
 		switch (true) {
@@ -405,8 +392,7 @@ abstract class ControllerPaymentPaymentsenseBase extends Controller
 	 *
 	 * @return bool
 	 */
-	protected function isOpenCartVersion3OrAbove()
-	{
+	protected function isOpenCartVersion3OrAbove() {
 		return defined('VERSION') && version_compare(VERSION, '3.0', '>=');
 	}
 }

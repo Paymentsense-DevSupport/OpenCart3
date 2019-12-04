@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright (C) 2018 Paymentsense Ltd.
+ * Copyright (C) 2019 Paymentsense Ltd.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -13,7 +13,7 @@
  * GNU General Public License for more details.
  *
  * @author      Paymentsense
- * @copyright   2018 Paymentsense Ltd.
+ * @copyright   2019 Paymentsense Ltd.
  * @license     https://www.gnu.org/licenses/gpl-3.0.html
  */
 
@@ -37,8 +37,7 @@ abstract class ModelExtensionPaymentPaymentsenseBase extends Model
 	 *
 	 * @return array
 	 */
-	public function getMethod($address, $total)
-	{
+	public function getMethod($address, $total) {
 		$method_data = array();
 		if ($this->isAvailable($address, $total)) {
 			$this->load->language("extension/payment/{$this->moduleName}");
@@ -60,8 +59,7 @@ abstract class ModelExtensionPaymentPaymentsenseBase extends Model
 	 *
 	 * @return string|null
 	 */
-	protected function getConfigValue($key, $default = null)
-	{
+	protected function getConfigValue($key, $default = null) {
 		if ($this->isOpenCartVersion3OrAbove()) {
 			// As of OpenCart version 3 the key is 'payment_' prefixed
 			$key = "payment_{$key}";
@@ -82,8 +80,7 @@ abstract class ModelExtensionPaymentPaymentsenseBase extends Model
 	 *
 	 * @return bool
 	 */
-	protected function isAvailable($address, $total)
-	{
+	protected function isAvailable($address, $total) {
 		if ($this->isSecureConnectionRequired() && !$this->isConnectionSecure()) {
 			return false;
 		}
@@ -114,12 +111,11 @@ abstract class ModelExtensionPaymentPaymentsenseBase extends Model
 	 *
 	 * @return bool
 	 */
-	public function isConnectionSecure()
-	{
-		$https = array_key_exists('HTTPS',$this->request->server)
+	public function isConnectionSecure() {
+		$https = array_key_exists('HTTPS', $this->request->server)
 			? $this->request->server['HTTPS']
 			: '';
-		$forwarded_proto = array_key_exists('HTTP_X_FORWARDED_PROTO',$this->request->server)
+		$forwarded_proto = array_key_exists('HTTP_X_FORWARDED_PROTO', $this->request->server)
 			? $this->request->server['HTTP_X_FORWARDED_PROTO']
 			: '';
 		switch (true) {
@@ -140,8 +136,7 @@ abstract class ModelExtensionPaymentPaymentsenseBase extends Model
 	 *
 	 * @return bool
 	 */
-	protected function isOpenCartVersion3OrAbove()
-	{
+	protected function isOpenCartVersion3OrAbove() {
 		return defined('VERSION') && version_compare(VERSION, '3.0', '>=');
 	}
 }

@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright (C) 2018 Paymentsense Ltd.
+ * Copyright (C) 2019 Paymentsense Ltd.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -13,7 +13,7 @@
  * GNU General Public License for more details.
  *
  * @author      Paymentsense
- * @copyright   2018 Paymentsense Ltd.
+ * @copyright   2019 Paymentsense Ltd.
  * @license     https://www.gnu.org/licenses/gpl-3.0.html
  */
 
@@ -22,6 +22,12 @@
  */
 abstract class ControllerExtensionPaymentPaymentsenseBase extends Controller
 {
+	/**
+	 * Module Name and Version
+	 */
+	const MODULE_NAME    = 'Paymentsense Module for OpenCart';
+	const MODULE_VERSION = '3.0.3';
+
 	/**
 	 * Transaction Result Codes
 	 */
@@ -71,11 +77,58 @@ abstract class ControllerExtensionPaymentPaymentsenseBase extends Controller
 	const COMMENT_FIELD_3DS_CHECK       = '3D Secure Check';
 
 	/**
+	 * Content types of the output of the module information
+	 */
+	const TYPE_APPLICATION_JSON = 'application/json';
+	const TYPE_TEXT_PLAIN       = 'text/plain';
+
+	/**
 	 * Module Name
 	 *
 	 * @var string
 	 */
 	protected $moduleName;
+
+	/**
+	 * Supported content types of the output of the module information
+	 *
+	 * @var array
+	 */
+	protected $content_types = array(
+		'json' => self::TYPE_APPLICATION_JSON,
+		'text' => self::TYPE_TEXT_PLAIN
+	);
+
+	/**
+	 * Module Information Action
+	 */
+	public function info() {
+		$info = array(
+			'Module Name'              => $this->getModuleName(),
+			'Module Installed Version' => $this->getModuleInstalledVersion(),
+		);
+
+		if ($this->getRequestParameter('extended_info', '') === 'true') {
+			$extended_info = array(
+				'Module Latest Version' => $this->getModuleLatestVersion(),
+				'OpenCart Version'      => $this->getOpenCartVersion(),
+				'PHP Version'           => $this->getPhpVersion()
+			);
+			$info = array_merge($info, $extended_info);
+		}
+
+		$this->outputInfo($info);
+	}
+
+	/**
+	 * Checksums Action
+	 */
+	public function checksums() {
+		$info = array(
+			'Checksums' => $this->getFileChecksums(),
+		);
+		$this->outputInfo($info);
+	}
 
 	/**
 	 * Switches the template engine to tpl
@@ -236,8 +289,7 @@ abstract class ControllerExtensionPaymentPaymentsenseBase extends Controller
 	 *
 	 * @return string|null
 	 */
-	protected function getConfigValue($key, $default = null)
-	{
+	protected function getConfigValue($key, $default = null) {
 		if ($this->isOpenCartVersion3OrAbove()) {
 			// As of OpenCart version 3 the key is 'payment_' prefixed
 			$key = "payment_{$key}";
@@ -256,8 +308,7 @@ abstract class ControllerExtensionPaymentPaymentsenseBase extends Controller
 	 * @param  string $country_name
 	 * @return string
 	 */
-	protected function getCountryIsoCode($country_name)
-	{
+	protected function getCountryIsoCode($country_name) {
 		$result        = '';
 		$country_codes = array(
 			'Afghanistan'=>'4',
@@ -499,8 +550,7 @@ abstract class ControllerExtensionPaymentPaymentsenseBase extends Controller
 	 * @param string $default_code Default currency code
 	 * @return string
 	 */
-	protected function getCurrencyIsoCode($currency_code, $default_code = '826')
-	{
+	protected function getCurrencyIsoCode($currency_code, $default_code = '826') {
 		$result = $default_code;
 		$iso_codes = array(
 			'AFA' => 4,
@@ -779,8 +829,7 @@ abstract class ControllerExtensionPaymentPaymentsenseBase extends Controller
 	 *
 	 * @return bool
 	 */
-	protected function isOpenCartVersion3OrAbove()
-	{
+	protected function isOpenCartVersion3OrAbove() {
 		return defined('VERSION') && version_compare(VERSION, '3.0', '>=');
 	}
 
@@ -789,8 +838,7 @@ abstract class ControllerExtensionPaymentPaymentsenseBase extends Controller
 	 *
 	 * @return bool True if gateway merchant ID, password and pre-shared key (for Hosted only) are non-empty, otherwise false
 	 */
-	protected function isConfigured()
-	{
+	protected function isConfigured() {
 		return ((trim($this->getConfigValue("{$this->moduleName}_mid")) != '') &&
 			(trim($this->getConfigValue("{$this->moduleName}_pass")) != '') &&
 			(
@@ -804,10 +852,9 @@ abstract class ControllerExtensionPaymentPaymentsenseBase extends Controller
 	 * Gets the value of an HTTP variable based on the requested method or empty string if doesn't exist
 	 *
 	 * @param string $field
-	 * @return string
+	 * @return mixed
 	 */
-	protected function getHttpVar($field)
-	{
+	protected function getHttpVar($field) {
 		switch ($this->request->server['REQUEST_METHOD']) {
 			case 'GET':
 				return array_key_exists($field, $this->request->get)
@@ -820,5 +867,180 @@ abstract class ControllerExtensionPaymentPaymentsenseBase extends Controller
 			default:
 				return '';
 		}
+	}
+
+	/**
+	 * Gets module name
+	 *
+	 * @return string
+	 */
+	protected function getModuleName() {
+		return self::MODULE_NAME;
+	}
+
+	/**
+	 * Gets module installed version
+	 *
+	 * @return string
+	 */
+	protected function getModuleInstalledVersion() {
+		return self::MODULE_VERSION;
+	}
+
+	/**
+	 * Gets module latest version
+	 *
+	 * @return string
+	 */
+	protected function getModuleLatestVersion() {
+		$result = 'N/A';
+		$headers = array(
+			'User-Agent: ' . $this->getModuleName() . ' v.' . $this->getModuleInstalledVersion(),
+			'Content-Type: text/plain; charset=utf-8',
+			'Accept: text/plain, */*',
+			'Accept-Encoding: identity',
+			'Connection: close'
+		);
+		$data = array(
+			'url'     => 'https://api.github.com/repos/'.
+				'Paymentsense-DevSupport/OpenCart3/releases/latest',
+			'headers' => $headers
+		);
+		if ($this->performCurl($data, $response) === 0) {
+			$json_object = @json_decode($response);
+			if (is_object($json_object) && property_exists($json_object, 'tag_name')) {
+				$result = $json_object->tag_name;
+			}
+		}
+		return $result;
+	}
+
+	/**
+	 * Gets OpenCart version
+	 *
+	 * @return string
+	 */
+	protected function getOpenCartVersion() {
+		return VERSION;
+	}
+
+	/**
+	 * Gets PHP version
+	 *
+	 * @return string
+	 */
+	protected function getPhpVersion() {
+		return phpversion();
+	}
+
+	/**
+	 * Performs cURL requests to the Paymentsense gateway
+	 *
+	 * @param array $data cURL data.
+	 * @param mixed $response the result or false on failure.
+	 *
+	 * @return int the error number or 0 if no error occurred
+	 */
+	protected function performCurl($data, &$response) {
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_HEADER, false);
+		curl_setopt($ch, CURLOPT_HTTPHEADER, $data['headers']);
+		curl_setopt($ch, CURLOPT_POST, false);
+		curl_setopt($ch, CURLOPT_URL, $data['url']);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($ch, CURLOPT_ENCODING, 'UTF-8');
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+		$response = curl_exec($ch);
+		$err_no   = curl_errno($ch);
+		curl_close($ch);
+		return $err_no;
+	}
+
+	/**
+	 * Gets a parameter from the route
+	 *
+	 * @param string $parameter Parameter.
+	 * @param string $default Default value.
+	 * @return string
+	 */
+	protected function getRequestParameter($parameter, $default = '') {
+		$result = $default;
+		if (isset($this->request->get['route'])) {
+			$route = $this->request->get['route'];
+			if (preg_match('#\/' . $parameter .'\/([a-z]+)#i', $route, $matches)) {
+				$result = $matches[1];
+			}
+		}
+		return $result;
+	}
+
+	/**
+	 * Converts an array to string
+	 *
+	 * @param array  $arr An associative array.
+	 * @param string $ident Identation.
+	 * @return string
+	 */
+	protected function convertArrayToString($arr, $ident = '') {
+		$result        = '';
+		$ident_pattern = '  ';
+		foreach ($arr as $key => $value) {
+			if ('' !== $result) {
+				$result .= PHP_EOL;
+			}
+			if (is_array($value)) {
+				$value = PHP_EOL . $this->convertArrayToString($value, $ident . $ident_pattern);
+			}
+			$result .= $ident . $key . ': ' . $value;
+		}
+		return $result;
+	}
+
+	/**
+	 * Outputs plugin information
+	 *
+	 * @param array $info Module information.
+	 */
+	protected function outputInfo($info) {
+		$output       = $this->getRequestParameter('output', 'text');
+		$content_type = array_key_exists($output, $this->content_types)
+			? $this->content_types[ $output ]
+			: self::TYPE_TEXT_PLAIN;
+
+		switch ($content_type) {
+			case self::TYPE_APPLICATION_JSON:
+				$body = json_encode($info);
+				break;
+			case self::TYPE_TEXT_PLAIN:
+			default:
+				$body = $this->convertArrayToString($info);
+				break;
+		}
+
+		@header('Cache-Control: max-age=0, must-revalidate, no-cache, no-store', true);
+		@header('Pragma: no-cache', true);
+		@header('Content-Type: ' . $content_type, true);
+		echo $body;
+		exit;
+	}
+
+	/**
+	 * Gets file checksums
+	 *
+	 * @return array
+	 */
+	protected function getFileChecksums() {
+		$result = array();
+		$root_path = realpath(__DIR__ . '/../../../..');
+		$file_list = $this->getHttpVar('data');
+		if (is_array($file_list)) {
+			foreach ($file_list as $key => $file) {
+				$filename = $root_path . '/' . $file;
+				$result[$key] = is_file($filename)
+					? sha1_file($filename)
+					: null;
+			}
+		}
+		return $result;
 	}
 }

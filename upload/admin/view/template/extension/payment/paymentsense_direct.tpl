@@ -23,8 +23,7 @@
 
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h3 class="panel-title"><strong>Module Version:</strong> <?php echo $module_version; ?><br />
-                        <strong>Release Date:</strong> <?php echo $module_date; ?></h3>
+                    <h3 class="panel-title"><strong>Module Version:</strong> <?php echo $module_version; ?></h3>
                 </div>
                 <div class="panel-body">
    

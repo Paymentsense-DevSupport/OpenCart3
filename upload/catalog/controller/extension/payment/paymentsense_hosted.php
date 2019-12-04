@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright (C) 2018 Paymentsense Ltd.
+ * Copyright (C) 2019 Paymentsense Ltd.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -13,7 +13,7 @@
  * GNU General Public License for more details.
  *
  * @author      Paymentsense
- * @copyright   2018 Paymentsense Ltd.
+ * @copyright   2019 Paymentsense Ltd.
  * @license     https://www.gnu.org/licenses/gpl-3.0.html
  */
 
@@ -131,8 +131,7 @@ class ControllerExtensionPaymentPaymentsenseHosted extends ControllerExtensionPa
 	/**
 	 * Notification Action
 	 */
-	public function notification()
-	{
+	public function notification() {
 		$this->processNotification();
 		$this->outputResponse();
 	}
@@ -182,8 +181,7 @@ class ControllerExtensionPaymentPaymentsenseHosted extends ControllerExtensionPa
 	/**
 	 * Processes the notification request from the Paymentsense gateway
 	 */
-	protected function processNotification()
-	{
+	protected function processNotification() {
 		try {
 			if (!$this->isConfigured()) {
 				$this->setError(self::MSG_NOT_CONFIGURED);
@@ -203,8 +201,7 @@ class ControllerExtensionPaymentPaymentsenseHosted extends ControllerExtensionPa
 	/**
 	 * Updates the order by adding the transaction details to the order history
 	 */
-	protected function updateOrder()
-	{
+	protected function updateOrder() {
 		$order_id        = $this->getHttpVar("OrderID");
 		$message_field   = ($this->getHttpVar("StatusCode") === self::TRX_RESULT_DUPLICATE) ? "PreviousMessage" : "Message";
 		$message         = $this->getHttpVar($message_field);
@@ -245,8 +242,7 @@ class ControllerExtensionPaymentPaymentsenseHosted extends ControllerExtensionPa
 	 *
 	 * @return bool
 	 */
-	protected function isOrderPaid($statusCode, $prevStatusCode)
-	{
+	protected function isOrderPaid($statusCode, $prevStatusCode) {
 		switch ($statusCode) {
 			case self::TRX_RESULT_SUCCESS:
 				$result = true;
@@ -263,8 +259,7 @@ class ControllerExtensionPaymentPaymentsenseHosted extends ControllerExtensionPa
 	/**
 	 * Sets the success response message and status code
 	 */
-	protected function setSuccess()
-	{
+	protected function setSuccess() {
 		$this->setResponse(self::STATUS_CODE_OK, self::MSG_SUCCESS);
 	}
 
@@ -274,8 +269,7 @@ class ControllerExtensionPaymentPaymentsenseHosted extends ControllerExtensionPa
 	 * @param string $message Response message
 	 *
 	 */
-	protected function setError($message)
-	{
+	protected function setError($message) {
 		$this->setResponse(self::STATUS_CODE_ERROR, $message);
 	}
 
@@ -285,8 +279,7 @@ class ControllerExtensionPaymentPaymentsenseHosted extends ControllerExtensionPa
 	 * @param string $statusCode Response status code
 	 * @param string $message Response message
 	 */
-	protected function setResponse($statusCode, $message)
-	{
+	protected function setResponse($statusCode, $message) {
 		$this->responseVars['status_code'] = $statusCode;
 		$this->responseVars['message']     = $message;
 	}
@@ -294,8 +287,7 @@ class ControllerExtensionPaymentPaymentsenseHosted extends ControllerExtensionPa
 	/**
 	 * Outputs the response
 	 */
-	protected function outputResponse()
-	{
+	protected function outputResponse() {
 		echo "StatusCode={$this->responseVars['status_code']}&Message={$this->responseVars['message']}";
 	}
 
@@ -306,8 +298,7 @@ class ControllerExtensionPaymentPaymentsenseHosted extends ControllerExtensionPa
 	 *
 	 * @return bool
 	 */
-	protected function isHashDigestValid($requestType)
-	{
+	protected function isHashDigestValid($requestType) {
 		$result = false;
 		$data = $this->buildVariablesString($requestType);
 		if ($data) {
@@ -331,8 +322,7 @@ class ControllerExtensionPaymentPaymentsenseHosted extends ControllerExtensionPa
 	 * @param string $key Secret key to use for generating the hash.
 	 * @return string
 	 */
-	protected function calculateHashDigest($data, $hash_method, $key)
-	{
+	protected function calculateHashDigest($data, $hash_method, $key) {
 		$result     = '';
 		$include_key = in_array($hash_method, ['MD5', 'SHA1'], true);
 		if ($include_key) {
@@ -363,8 +353,7 @@ class ControllerExtensionPaymentPaymentsenseHosted extends ControllerExtensionPa
 	 *
 	 * @return bool
 	 */
-	protected function buildVariablesString($request_type)
-	{
+	protected function buildVariablesString($request_type) {
 		$result = false;
 		$fields = array(
 			// Variables for hash digest calculation for notification requests (excluding configuration variables)

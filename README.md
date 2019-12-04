@@ -1,20 +1,12 @@
 Paymentsense Extension for OpenCart
 ====================================
 
-Version: 3.0.2
-Date: 2019-08-15
-Tags: online payment, payment, payment gateway
-Requires at least: 2.3.0.0
-Tested up to: 3.0.2.0
-Stable tag: 3.0.2
-Requires PHP: 5.4
-License: GPLv3
-License URL: http://www.gnu.org/licenses/gpl-3.0.html
+Payment extension for OpenCart, allowing you to take payments via Paymentsense.
 
 Description
 -----------
 
-Payment module for OpenCart 2.3 and 3.0, allowing you to take payments via Paymentsense.
+Payment extension for OpenCart 2.3 and 3.0 (tested up to 3.0.3.2), allowing you to take payments via Paymentsense.
 
 Installation using Extension Installer
 --------------------------------------
@@ -43,18 +35,29 @@ Manual installation
 Changelog
 ---------
 
-##### 3.0.2
-### Removed
-- Check for the Merchant ID format 
+### 3.0.3
+##### Added
+- Module information reporting feature
+
+##### Changed
+- Logo
+
+##### Removed
+- gw3 gateway entry point
 
 
-##### 3.0.1
-### Fixed
+### 3.0.2
+##### Removed
+- Check for the Merchant ID format
+
+
+### 3.0.1
+##### Fixed
 - Path to the payment methods templates when using a custom theme
 
 
-##### 3.0.0
-### Added
+### 3.0.0
+##### Added
 - OpenCart 3.x support
 - Warning on insecure OpenCart setup on the configuration page (Direct)
 - Check for required card fields before sending the transaction to the gateway (Direct)
@@ -62,19 +65,19 @@ Changelog
 - Default Successful Transaction Order Status (set as "Processing")
 - Default Failed Transaction Order Status (set as "Failed")
 
-### Changed
+##### Changed
 - Hosted and Direct combined into one payment extension
 - Status message on failed transactions changed to bootstrap alert (Direct)
 - Logo (scaled down)
 
-### Fixed
+##### Fixed
 - Broken links
 
-### Removed
+##### Removed
 - Database tables ("paymentsense" and "paymentsense_direct")
 - Gateway password strict format
 
-### Security
+##### Security
 - SSL/TLS required on checkout (Direct)
 - Hash digest check on the customer redirect from the gateway (Hosted)
 
