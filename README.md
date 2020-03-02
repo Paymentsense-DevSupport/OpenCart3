@@ -35,6 +35,14 @@ Manual installation
 Changelog
 ---------
 
+### 3.0.4
+##### Added
+- Detailed message to the transactions log when a transaction fails (Paymentsense Direct)
+
+##### Removed
+- Unneeded transaction retries when a transaction fails with an "Input variable errors" message (Paymentsense Direct)
+
+
 ### 3.0.3
 ##### Added
 - Module information reporting feature

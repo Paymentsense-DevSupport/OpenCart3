@@ -230,6 +230,7 @@ class ControllerExtensionPaymentPaymentsenseDirect extends ControllerExtensionPa
 			if (0 === $this->sendTransaction($data, $response)) {
 				$status_code     = $this->getXmlValue($response, 'StatusCode', '[0-9]+');
 				$message         = $this->getXmlValue($response, 'Message', '.+');
+				$detail          = $this->getXmlValue($response, 'Detail', '.+');
 				$auth_code       = $this->getXmlValue($response, 'AuthCode', '[a-zA-Z0-9]+');
 				$cross_reference = $this->getXmlCrossReference($response);
 				$avs_check       = $this->getXmlValue($response, 'AddressNumericCheckResult', '.+');
@@ -242,7 +243,7 @@ class ControllerExtensionPaymentPaymentsenseDirect extends ControllerExtensionPa
 				$status = 'failed';
 
 				if (is_numeric($status_code)) {
-					if (self::TRX_RESULT_FAILED !== $status_code) {
+					if ((self::TRX_RESULT_FAILED !== $status_code) || ($message === 'Input variable errors')) {
 						$soap_success = true;
 						switch ($status_code) {
 							case self::TRX_RESULT_SUCCESS:
@@ -292,8 +293,9 @@ class ControllerExtensionPaymentPaymentsenseDirect extends ControllerExtensionPa
 							break;
 						case 'failed':
 						default:
+							$detailed_message = $message . ': ' . $detail;
 							$comments = array(
-								self::COMMENT_FIELD_MESSAGE         => $message,
+								self::COMMENT_FIELD_MESSAGE         => $detailed_message,
 								self::COMMENT_FIELD_CROSS_REFERENCE => $cross_reference,
 								self::COMMENT_FIELD_AVS_CHECK       => $avs_check,
 								self::COMMENT_FIELD_POSTCODE_CHECK  => $postcode_check,
@@ -301,7 +303,7 @@ class ControllerExtensionPaymentPaymentsenseDirect extends ControllerExtensionPa
 								self::COMMENT_FIELD_3DS_CHECK       => $threeds_check
 							);
 							$this->addFailMessage($this->session->data['order_id'], $comments);
-							$result['error'] = $message;
+							$result['error'] = $detailed_message;
 							break;
 					}
 				}

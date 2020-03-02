@@ -26,7 +26,7 @@ abstract class ControllerExtensionPaymentPaymentsenseBase extends Controller
 	 * Module Name and Version
 	 */
 	const MODULE_NAME    = 'Paymentsense Module for OpenCart';
-	const MODULE_VERSION = '3.0.3';
+	const MODULE_VERSION = '3.0.4';
 
 	/**
 	 * Transaction Result Codes

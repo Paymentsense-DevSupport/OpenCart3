@@ -25,7 +25,7 @@ abstract class ControllerPaymentPaymentsenseBase extends Controller
 	/**
 	 * Module Version
 	 */
-	const MODULE_VERSION = '3.0.3';
+	const MODULE_VERSION = '3.0.4';
 
 	/**
 	 * OpenCart Order Status Constants
