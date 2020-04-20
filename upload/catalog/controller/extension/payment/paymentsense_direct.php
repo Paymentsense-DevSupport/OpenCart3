@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright (C) 2019 Paymentsense Ltd.
+ * Copyright (C) 2020 Paymentsense Ltd.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -13,7 +13,7 @@
  * GNU General Public License for more details.
  *
  * @author      Paymentsense
- * @copyright   2019 Paymentsense Ltd.
+ * @copyright   2020 Paymentsense Ltd.
  * @license     https://www.gnu.org/licenses/gpl-3.0.html
  */
 
@@ -175,6 +175,15 @@ class ControllerExtensionPaymentPaymentsenseDirect extends ControllerExtensionPa
 			'EmailAddress' => $order_info['email'],
 			'CustomerIPAddress' => $this->request->server['REMOTE_ADDR'],
 		);
+
+		$data = array_map(
+			function ($value) {
+				return null === $value ? '' : $this->filterUnsupportedChars($value, true);
+			},
+			$data
+		);
+
+		$data = $this->applyLengthRestrictions($data);
 
 		$xml = $this->buildCardDetailsTransactionRequest($data);
 

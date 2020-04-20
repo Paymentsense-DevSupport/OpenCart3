@@ -35,6 +35,13 @@ Manual installation
 Changelog
 ---------
 
+### 3.0.5
+##### Added
+- MD5, HMACMD5, HMACSHA1, HMACSHA256 and HMACSHA512 hash methods (Paymentsense Hosted)
+- Filter for characters not supported by the gateway
+- Length restriction of fields sent to the gateway
+
+
 ### 3.0.4
 ##### Added
 - Detailed message to the transactions log when a transaction fails (Paymentsense Direct)

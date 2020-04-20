@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright (C) 2019 Paymentsense Ltd.
+ * Copyright (C) 2020 Paymentsense Ltd.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -13,7 +13,7 @@
  * GNU General Public License for more details.
  *
  * @author      Paymentsense
- * @copyright   2019 Paymentsense Ltd.
+ * @copyright   2020 Paymentsense Ltd.
  * @license     https://www.gnu.org/licenses/gpl-3.0.html
  */
 
@@ -25,7 +25,7 @@ abstract class ControllerPaymentPaymentsenseBase extends Controller
 	/**
 	 * Module Version
 	 */
-	const MODULE_VERSION = '3.0.4';
+	const MODULE_VERSION = '3.0.5';
 
 	/**
 	 * OpenCart Order Status Constants

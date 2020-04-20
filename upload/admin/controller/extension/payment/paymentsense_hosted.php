@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright (C) 2019 Paymentsense Ltd.
+ * Copyright (C) 2020 Paymentsense Ltd.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -13,7 +13,7 @@
  * GNU General Public License for more details.
  *
  * @author      Paymentsense
- * @copyright   2019 Paymentsense Ltd.
+ * @copyright   2020 Paymentsense Ltd.
  * @license     https://www.gnu.org/licenses/gpl-3.0.html
  */
 
@@ -85,6 +85,7 @@ class ControllerExtensionPaymentPaymentsenseHosted extends ControllerPaymentPaym
 			'paymentsense_hosted_mid'                    => null,
 			'paymentsense_hosted_pass'                   => null,
 			'paymentsense_hosted_key'                    => null,
+			'paymentsense_hosted_hash_method'            => 'SHA1',
 			'paymentsense_hosted_type'                   => null,
 			'paymentsense_hosted_sort_order'             => null,
 			'paymentsense_hosted_cv2_mand'               => null,

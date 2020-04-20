@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright (C) 2019 Paymentsense Ltd.
+ * Copyright (C) 2020 Paymentsense Ltd.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -13,7 +13,7 @@
  * GNU General Public License for more details.
  *
  * @author      Paymentsense
- * @copyright   2019 Paymentsense Ltd.
+ * @copyright   2020 Paymentsense Ltd.
  * @license     https://www.gnu.org/licenses/gpl-3.0.html
  */
 
@@ -103,15 +103,28 @@ class ControllerExtensionPaymentPaymentsenseHosted extends ControllerExtensionPa
 			'PaymentFormDisplaysResult' => 'FALSE'
 		);
 
+		$fields = array_map(
+			function ($value) {
+				return $value === null ? '' : $this->filterUnsupportedChars($value);
+			},
+			$fields
+		);
+
+		$fields = $this->applyLengthRestrictions($fields);
+
 		$data  = 'MerchantID=' . $this->getConfigValue('paymentsense_hosted_mid');
 		$data .= '&Password=' . $this->getConfigValue('paymentsense_hosted_pass');
 
 		foreach ($fields as $key => $value) {
-			$data .= '&' . $key . '=' . str_replace('&amp;', '&', $value);
+			$data .= '&' . $key . '=' . $value;
 		};
 
 		$additional_fields = array(
-			'HashDigest' => $this->calculateHashDigest($data, 'SHA1', $this->getConfigValue('paymentsense_hosted_key')),
+			'HashDigest' => $this->calculateHashDigest(
+				$data,
+				$this->getConfigValue('paymentsense_hosted_hash_method'),
+				$this->getConfigValue('paymentsense_hosted_key')
+			),
 			'MerchantID' => $this->getConfigValue('paymentsense_hosted_mid')
 		);
 
@@ -305,7 +318,7 @@ class ControllerExtensionPaymentPaymentsenseHosted extends ControllerExtensionPa
 			$hash_digest_received = $this->getHttpVar('HashDigest');
 			$hash_digest_calculated = $this->calculateHashDigest(
 				$data,
-				'SHA1', // Hardcoded as per the current plugin implementation
+				$this->getConfigValue('paymentsense_hosted_hash_method'),
 				$this->getConfigValue('paymentsense_hosted_key')
 			);
 			$result = strToUpper($hash_digest_received) === strToUpper($hash_digest_calculated);
@@ -315,7 +328,7 @@ class ControllerExtensionPaymentPaymentsenseHosted extends ControllerExtensionPa
 
 	/**
 	 * Calculates the hash digest.
-	 * Supported hash methods: MD5, SHA1, HMACMD5, HMACSHA1
+	 * Supported hash methods: MD5, SHA1, HMACMD5, HMACSHA1, HMACSHA256 and HMACSHA512
 	 *
 	 * @param string $data Data to be hashed.
 	 * @param string $hash_method Hash method.
@@ -330,7 +343,6 @@ class ControllerExtensionPaymentPaymentsenseHosted extends ControllerExtensionPa
 		}
 		switch ($hash_method) {
 			case 'MD5':
-				// @codingStandardsIgnoreLine
 				$result = md5($data);
 				break;
 			case 'SHA1':
@@ -341,6 +353,12 @@ class ControllerExtensionPaymentPaymentsenseHosted extends ControllerExtensionPa
 				break;
 			case 'HMACSHA1':
 				$result = hash_hmac('sha1', $data, $key);
+				break;
+			case 'HMACSHA256':
+				$result = hash_hmac('sha256', $data, $key);
+				break;
+			case 'HMACSHA512':
+				$result = hash_hmac('sha512', $data, $key);
 				break;
 		}
 		return $result;

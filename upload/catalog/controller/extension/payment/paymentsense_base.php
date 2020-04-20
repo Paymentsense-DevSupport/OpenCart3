@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright (C) 2019 Paymentsense Ltd.
+ * Copyright (C) 2020 Paymentsense Ltd.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -13,7 +13,7 @@
  * GNU General Public License for more details.
  *
  * @author      Paymentsense
- * @copyright   2019 Paymentsense Ltd.
+ * @copyright   2020 Paymentsense Ltd.
  * @license     https://www.gnu.org/licenses/gpl-3.0.html
  */
 
@@ -26,7 +26,7 @@ abstract class ControllerExtensionPaymentPaymentsenseBase extends Controller
 	 * Module Name and Version
 	 */
 	const MODULE_NAME    = 'Paymentsense Module for OpenCart';
-	const MODULE_VERSION = '3.0.4';
+	const MODULE_VERSION = '3.0.5';
 
 	/**
 	 * Transaction Result Codes
@@ -1040,6 +1040,85 @@ abstract class ControllerExtensionPaymentPaymentsenseBase extends Controller
 					? sha1_file($filename)
 					: null;
 			}
+		}
+		return $result;
+	}
+
+	/**
+	 * Converts HTML entities to their corresponding characters and replaces the chars that are not supported
+	 * by the gateway with supported ones
+	 *
+	 * @param string $data A value of a variable sent to the Hosted Payment Form.
+	 * @param bool   $replace_ampersand Flag for replacing the "ampersand" (&) character.
+	 * @return string
+	 */
+	protected function filterUnsupportedChars($data, $replace_ampersand = false)
+	{
+		$data = $this->htmlDecode($data);
+		if ($replace_ampersand) {
+			$data = $this->replaceAmpersand($data);
+		}
+		$data = $this->htmlDecode($data);
+		return str_replace(
+			['"', '\'', '\\', '<', '>', '[', ']'],
+			['`', '`',  '/',  '(', ')', '(', ')'],
+			$data
+		);
+	}
+
+	/**
+	 * Converts HTML entities to their corresponding characters
+	 *
+	 * @param string $data A value of a variable sent to the Hosted Payment Form.
+	 * @return string
+	 */
+	protected function htmlDecode($data)
+	{
+		return str_replace(
+			['&quot;', '&apos;', '&#039;', '&amp;'],
+			['"',      '\'',    '\'',      '&'],
+			$data
+		);
+	}
+
+	/**
+	 * Replaces the "ampersand" (&) character with the "at" character (@).
+	 * Required for Paymentsense Direct.
+	 *
+	 * @param string $data A value of a variable sent to the Hosted Payment Form.
+	 * @return string
+	 */
+	protected function replaceAmpersand($data)
+	{
+		return str_replace('&', '@', $data);
+	}
+
+	/**
+	 * Applies the gateway's restrictions on the length of selected alphanumeric fields sent to the HPF
+	 *
+	 * @param array $data The variables sent to the Hosted Payment Form.
+	 * @return array
+	 */
+	protected function applyLengthRestrictions($data)
+	{
+		$result = [];
+		$max_lengths = [
+			'OrderDescription' => 256,
+			'CustomerName'     => 100,
+			'Address1'         => 100,
+			'Address2'         => 50,
+			'Address3'         => 50,
+			'Address4'         => 50,
+			'City'             => 50,
+			'State'            => 50,
+			'PostCode'         => 50,
+			'EmailAddress'     => 100,
+			'PhoneNumber'      => 30
+		];
+		foreach ($data as $key => $value) {
+			$result[$key] = array_key_exists($key, $max_lengths)
+				? substr($value, 0, $max_lengths[$key])
+				: $value;
 		}
 		return $result;
 	}
